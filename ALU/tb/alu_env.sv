@@ -64,21 +64,17 @@ task send_payload();
 
 //	DISPLAY  TASK
 task display();
-    // Khai báo biến cục bộ
+
     logic [8:0] expected_result;
     logic [7:0] act_a, act_b;
     logic [2:0] act_op;
     logic [8:0] actual_result;
 
-    // 1. Lấy mẫu dữ liệu (Sampling)
-    // Đọc lại các giá trị đã đưa vào DUT và kết quả ngõ ra hiện tại
     act_a         = ALU_Interface.cb.a;
     act_b         = ALU_Interface.cb.b;
     act_op        = ALU_Interface.cb.opcode;
     actual_result = ALU_Interface.cb.result;
 
-    // 2. Mô hình tham chiếu (Golden Model)
-    // Mô phỏng lại chính xác hành vi của phần cứng bằng phần mềm
     case (act_op)
         3'b000:  expected_result = act_a + act_b;               // ADD
         3'b001:  expected_result = act_a - act_b;               // SUB
@@ -89,8 +85,6 @@ task display();
         default: expected_result = 9'd0;
     endcase
 
-    // 3. So sánh và Đánh giá (Checking)
-    // Sử dụng toán tử === để bắt chặt cả các trạng thái X (Unknown) hoặc Z (High-Z)
     if (actual_result === expected_result) begin
         $display("[PASSED] OP: %b | A: %3d | B: %3d | Actual: %9b | Expected: %9b", 
                  act_op, act_a, act_b, actual_result, expected_result);
